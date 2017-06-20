@@ -10,6 +10,8 @@
 
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
+    "HTML-CSS": {availableFonts: ["TeX"]},
+         MMLorHTML: {prefer: "HTML"},
     showProcessingMessages: false,
     tex2jax: { inlineMath: [['$_','$_']] },
     TeX: {
@@ -29,6 +31,20 @@
   }
 }
   });
+MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
+  var VARIANT = MathJax.OutputJax["HTML-CSS"].FONTDATA.VARIANT;
+  VARIANT["normal"].fonts.unshift("MathJax_SansSerif");
+  VARIANT["bold"].fonts.unshift("MathJax_SansSerif-bold");
+  VARIANT["italic"].fonts.unshift("MathJax_SansSerif-italic");
+  VARIANT["-tex-mathit"].fonts.unshift("MathJax_SansSerif-italic");
+});
+MathJax.Hub.Register.StartupHook("SVG Jax Ready",function () {
+  var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;
+  VARIANT["normal"].fonts.unshift("MathJax_SansSerif");
+  VARIANT["bold"].fonts.unshift("MathJax_SansSerif-bold");
+  VARIANT["italic"].fonts.unshift("MathJax_SansSerif-italic");
+  VARIANT["-tex-mathit"].fonts.unshift("MathJax_SansSerif-italic");
+});
 </script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
 
