@@ -8,7 +8,21 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+<!-- Include the Quill library -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
 <script type="text/x-mathjax-config">
+  var SwapVisibility = (divId) => {
+    var ele = document.getElementById(divId);
+    var currentStyle = ele.style.display;
+    ele.style.display = currentStyle == 'none' ? 'block' : 'none'
+  }
+  var SwapSource = () => {
+    SwapVisibility('MathInput');
+    SwapVisibility('SourceRaw');
+}
   MathJax.Hub.Config({
     showProcessingMessages: false,
     tex2jax: { inlineMath: [['$_','$_']] },
@@ -50,6 +64,7 @@ var Preview = {
   Init: function () {
     this.preview = document.getElementById("MathPreview");
     this.buffer = document.getElementById("MathBuffer");
+    this.rawsource = document.getElementById("SourceRaw");
   },
 
   //
@@ -87,17 +102,37 @@ var Preview = {
   CreatePreview: function () {
     Preview.timeout = null;
     if (this.mjPending) return;
-    var text = document.getElementById("MathInput").value;
+    // used to grab inner html but now we want the quill root's inner html
+    // so we don't grab all the quill stuff and shove it into the preview div.
+    // var text = document.getElementById("MathInput").innerHTML;
+    var text;
+    var updateQuill;
+    if (this.rawsource.style.display == 'block') {
+      // we are seeing the raw source, so use that as the source
+      text = this.rawsource.value;
+      updateQuill = true;
+    }
+    else {
+      text = quill.root.innerHTML;  
+      updateQuill = false;
+    }
+    
     if (text === this.oldtext) return;
     if (this.mjRunning) {
       this.mjPending = true;
       MathJax.Hub.Queue(["CreatePreview",this]);
     } else {
       this.buffer.innerHTML = this.oldtext = text;
+      if (updateQuill) {
+        quill.root.innerHTML = text;
+      }
+      else {
+        this.rawsource.value = text;
+      }
       this.mjRunning = true;
       MathJax.Hub.Queue(
-	["Typeset",MathJax.Hub,this.buffer],
-	["PreviewDone",this]
+    ["Typeset",MathJax.Hub,this.buffer],
+    ["PreviewDone",this]
       );
     }
   },
@@ -126,21 +161,51 @@ Preview.callback.autoReset = true;  // make sure it can run more than once
 <div style="width: 100%;">
 
 <div style="float:left; width: 30%;">
-<p>Type or paste your paragraphs with LaTeX here, using our usual $_ wrapper for in-line math and $$ for full line math:</p>
-<textarea id="MathInput" cols="60" rows="20" onkeyup="Preview.Update()" style="margin-top:5px; padding: 5px;">
-</textarea>
-</p>
+  <p>Edit using the WYSIWYG widget and click the button to swap to the raw HTML for pasting into an ingest spreadsheet. Or go back to <a href="latex.html">classic previewer</a>.</p>
+  <button onclick="SwapSource();">Swap Source</button>
+  <div id="MathInput" cols="60" rows="20" onkeyup="Preview.Update()" style="margin-top:5px; display: block; padding: 5px;">
+  </div>
+  <textarea id="SourceRaw" rows="20" onkeyup="Preview.Update()" style="width: 100%; margin-top:5px; display: none; padding: 5px;">
+  </textarea>
 </div>
 
 <div style="float:right; width: 60%;">
-<p>Preview is shown here:</p>
-<div id="MathPreview" style="border:1px solid; padding: 5px; width:90%; margin-top:5px; margin-right:5px;"></div>
-<div id="MathBuffer" style="border:1px solid; padding: 5px; width:90%; margin-top:5px; margin-right:5px; 
+  <p>Preview is shown here:</p>
+  <div id="MathPreview" style="border:1px solid; padding: 5px; width:90%; margin-top:5px; margin-right:5px;"></div>
+  <div id="MathBuffer" style="border:1px solid; padding: 5px; width:90%; margin-top:5px; margin-right:5px; 
 visibility:hidden; position:absolute; top:0; left: 0"></div>
 </div>
 
 <script>
 Preview.Init();
+
+var Bold = Quill.import('formats/bold');
+Bold.tagName = 'b';   // Quill uses <strong> by default
+Quill.register(Bold, true);
+
+var Italic = Quill.import('formats/italic');
+Italic.tagName = 'i'; // Quill uses <em> by default
+Quill.register(Italic, true);
+
+// This seems necessary to get inline style like we use in the CMS
+// e.g. <p style="text-align: center;"> instead of Quill's class styling
+var Align = Quill.import('attributors/style/align');
+Quill.register(Align, true);
+
+var toolbarOptions = [
+  [{ 'header': 1 }, { 'header': 2 }],
+  ['bold', 'italic', 'underline'],
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+  [{ 'align': ['', 'center'] }],
+  ['clean'],
+];
+
+var quill = new Quill('#MathInput', {
+    theme: 'snow',
+    modules: {
+      toolbar: toolbarOptions
+    }
+  });
 </script>
 
 </body>
