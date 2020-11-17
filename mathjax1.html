@@ -1,0 +1,41 @@
+<html>
+    <head>
+        <title>MathJax2 With Radio Button</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+                tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]},
+                AssistiveMML: {disabled: false}
+            });
+        </script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_HTML-full"></script>
+    </head>
+    <body>
+	<p>Here is some math. Something $x$-axis. And $x = y^2 + 3$. And complicated $\frac{x^2 + 1}{z^2 + 1}$ here.</p>
+
+        <form>
+            <p>
+                What is the correct answer?
+            </p>
+            <label>
+                <input type="radio" name="answer" value="0" />
+                <div>
+                    Something simple like $x$ here with more text.
+                </div>
+            </label>
+            <label>
+                <input type="radio" name="answer" value="1" />
+                <div>
+                    Something more complicated like $x^2 + 1$ here with more text.
+                </div>
+            </label>
+            <label>
+                <input type="radio" name="answer" value="2" />
+                <div>
+                    Something even more complicated like $\frac{x^2 + 1}{z^2 + 1}$ here with more text.
+                </div>
+            </label>
+        </form>
+    </body>
+</html>

@@ -1,0 +1,55 @@
+<html>
+    <head>
+        <title>MathJax2 With Radio Button</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+                tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]},
+                AssistiveMML: {disabled: false}
+            });
+        </script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_HTML-full"></script>
+    	<style>
+	   .offscreen {
+  clip: rect(1px 1px 1px 1px); /* IE 6/7 */
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+</style>
+    </head>
+    <body>
+	<p>Here is some math. Something $x$-axis. And $x = y^2 + 3$.</p>
+
+        <form>
+            <p>
+                What is the correct answer?
+            </p>
+            <label>
+                <input type="radio" name="answer" value="0" />
+                <div aria-hidden="true">
+                    Something $x$-axis
+                </div>
+		<span class="offscreen">Offscreen label $x$-axis</span>
+            </label>
+            <label>
+                <input type="radio" name="answer" value="1" />
+                <div aria-hidden="true">
+                    Something $y$-axis
+                </div>
+		<span class="offscreen">Offscreen label $y$-axis</span>
+            </label>
+            <label>
+                <input type="radio" name="answer" value="2" />
+                <div aria-hidden="true">
+                    The value is $\frac{z^2 + 1}{x^2 + 1}$ when you simplify. 
+                </div>
+		<span class="offscreen">Offscreen $\frac{z^2 + 1}{x^2 + 1}$ when you simplify</span>
+            </label>
+        </form>
+    </body>
+</html>
